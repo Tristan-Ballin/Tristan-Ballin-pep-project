@@ -13,7 +13,7 @@ public class AccountDAO {
 
 
     /**
-     * TODO: Retrieve a specific Account using its Account ID.
+     * TODO: Retrieve a specific Account using its Username.
      *
      * You only need to change the sql String and set preparedStatement parameters.
      *

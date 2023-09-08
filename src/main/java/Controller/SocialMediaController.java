@@ -63,7 +63,6 @@ public class SocialMediaController {
         ObjectMapper mapper = new ObjectMapper();
         Account Account = mapper.readValue(context.body(), Account.class);
         Account loginAccount = accountService.getAccountByUserAccount(Account);
-        System.out.println(loginAccount);
         if(loginAccount==null){
             context.status(401);
         }else{
