@@ -2,11 +2,13 @@ package Service;
 
 import Model.Message;
 import DAO.MessageDAO;
+import DAO.AccountDAO;
 
 import java.util.List;
 
 public class MessageService {
     MessageDAO MessageDAO;
+    AccountDAO AccountDAO;
 
     /**
      * No-args constructor for a MessageService instantiates a plain MessageDAO.
@@ -14,6 +16,7 @@ public class MessageService {
      */
     public MessageService(){
         MessageDAO = new MessageDAO();
+        AccountDAO = new AccountDAO();
     }
 
     /**
@@ -43,6 +46,12 @@ public class MessageService {
      *         inform our provide the front-end client with information about the added Message.
      */
     public Message addMessage(Message Message){
+        System.out.println(Message);
+        System.out.println(AccountDAO.getAccountById(Message.posted_by));
+        if (Message.message_text=="" || Message.message_text.length()>254 || AccountDAO.getAccountById(Message.posted_by)==null) {
+            return null;
+        }
+
         return MessageDAO.insertMessage(Message);
     }
 

@@ -97,19 +97,20 @@ public class MessageDAO {
         try {
             //Write SQL logic here. When inserting, you only need to define the departure_city and arrival_city
             //values (two columns total!)
-            String sql = "INSERT INTO Message (departure_city, arrival_city) VALUES (?, ?);" ;
+            String sql = "INSERT INTO Message (message_text, posted_by, time_posted_epoch) VALUES (?,?,?);" ;
             PreparedStatement preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 
             //write preparedStatement's setString and setInt methods here.
-            /*preparedStatement.setString(1,Message.departure_city);
-            preparedStatement.setString(2,Message.arrival_city);*/
+            preparedStatement.setString(1,Message.message_text);
+            preparedStatement.setInt(2,Message.posted_by);
+            preparedStatement.setLong(3,Message.time_posted_epoch);
 
             preparedStatement.executeUpdate();
             ResultSet pkeyResultSet = preparedStatement.getGeneratedKeys();
-            /*if(pkeyResultSet.next()){
+            if(pkeyResultSet.next()){
                 int generated_Message_id = (int) pkeyResultSet.getLong(1);
-                return new Message(generated_Message_id, Message.getDeparture_city(), Message.getArrival_city());
-            }*/
+                return new Message(generated_Message_id, Message.getPosted_by(), Message.getMessage_text(), Message.getTime_posted_epoch());
+            }
         }catch(SQLException e){
             System.out.println(e.getMessage());
         }
