@@ -1,7 +1,14 @@
 package Controller;
 
+import Model.Account;
+import Service.AccountService;
+import Model.Message;
+import Service.MessageService;
+
 import io.javalin.Javalin;
 import io.javalin.http.Context;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * TODO: You will need to write your own endpoints and handlers for your controller. The endpoints you will need can be
@@ -9,6 +16,14 @@ import io.javalin.http.Context;
  * refer to prior mini-project labs and lecture materials for guidance on how a controller may be built.
  */
 public class SocialMediaController {
+    AccountService accountService;
+    MessageService messageService;
+    public SocialMediaController(){
+        accountService = new AccountService();
+        messageService = new MessageService();
+    }
+
+
     /**
      * In order for the test cases to work, you will need to write the endpoints in the startAPI() method, as the test
      * suite must receive a Javalin object from this method.
@@ -28,47 +43,56 @@ public class SocialMediaController {
         return app;
     }
 
-    /**
-     * This is an example handler for an example endpoint.
-     * @param context The Javalin Context object manages information about both the HTTP request and response.
+    /*
+     
      */
-    private void postRegister(Context context) {
-        context.json("sample text");
+    private void postRegister(Context context) throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        Account Account = mapper.readValue(context.body(), Account.class);
+        Account addedAccount = accountService.addAccount(Account);
+        System.out.println(addedAccount);
+        if(addedAccount==null){
+            context.status(400);
+        }else{
+            context.json(mapper.writeValueAsString(addedAccount));
+        }
     }
 
     
-    private void postLogin(Context context) {
-        context.json("sample text");
+    private void postLogin(Context context) throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        Account Account = mapper.readValue(context.body(), Account.class);
+        Account loginAccount = accountService.getAccountByUserAccount(Account);
+        System.out.println(loginAccount);
+        if(loginAccount==null){
+            context.status(401);
+        }else{
+            context.json(mapper.writeValueAsString(loginAccount));
+        }
     }
 
     
-    private void postMessage(Context context) {
-        context.json("sample text");
+    private void postMessage(Context context) throws JsonProcessingException{
     }
 
     
-    private void getAllMessages(Context context) {
-        context.json("sample text");
+    private void getAllMessages(Context context) throws JsonProcessingException{
     }
 
     
-    private void getMessageById(Context context) {
-        context.json("sample text");
+    private void getMessageById(Context context) throws JsonProcessingException{
     }
 
     
-    private void deleteMessageById(Context context) {
-        context.json("sample text");
+    private void deleteMessageById(Context context) throws JsonProcessingException{
     }
 
     
-    private void patchMessageById(Context context) {
-        context.json("sample text");
+    private void patchMessageById(Context context) throws JsonProcessingException{
     }
 
     
-    private void getMessagesByUserId(Context context) {
-        context.json("sample text");
+    private void getMessagesByUserId(Context context) throws JsonProcessingException{
     }
 
 }
