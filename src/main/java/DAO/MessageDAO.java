@@ -12,8 +12,6 @@ public class MessageDAO {
     /**
      * TODO: Retrieve all Messages from the Message table.
      *
-     * You only need to change the sql String and set preparedStatement parameters.
-     *
      * @return all Messages.
      */
     public List<Message> getAllMessages(){
@@ -25,11 +23,39 @@ public class MessageDAO {
 
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             ResultSet rs = preparedStatement.executeQuery();
-            /*while(rs.next()){
-                Message Message = new Message(rs.getInt("Message_id"), rs.getString("departure_city"),
-                        rs.getString("arrival_city"));
+            while(rs.next()){
+                
+                Message Message = new Message(rs.getInt("message_id"), rs.getInt("posted_by"),
+                        rs.getString("message_text"), rs.getLong("time_posted_epoch"));
                 Messages.add(Message);
-            }*/
+                //System.out.println(Messages);
+            }
+        }catch(SQLException e){
+            System.out.println(e.getMessage());
+        }
+        return Messages;
+    }
+    /**
+     * TODO: Retrieve all Messages from the Message table where posted_by=user_id.
+     *
+     * @return all Messages by user.
+     */
+    public List<Message> getAllMessagesByUserId(int id){
+        Connection connection = ConnectionUtil.getConnection();
+        List<Message> Messages = new ArrayList<>();
+        try {
+            //Write SQL logic here
+            String sql = "SELECT * FROM Message WHERE posted_by = ?";
+
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setInt(1,id);
+            ResultSet rs = preparedStatement.executeQuery();
+            while(rs.next()){
+                
+                Message Message = new Message(rs.getInt("message_id"), rs.getInt("posted_by"),
+                        rs.getString("message_text"), rs.getLong("time_posted_epoch"));
+                Messages.add(Message);
+            }
         }catch(SQLException e){
             System.out.println(e.getMessage());
         }
@@ -37,24 +63,38 @@ public class MessageDAO {
     }
 
     /**
+     * TODO: Delete a specific Message using its Message ID.
+     *
+     * @param id a Message ID.
+     */
+    public Message deleteMessageById(int id){
+        Connection connection = ConnectionUtil.getConnection();
+        try {
+            //Write SQL logic here
+            String sql = "DELETE FROM Message where message_id = ?";
+            
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+
+            //write preparedStatement's setString and setInt methods here.
+            preparedStatement.setInt(1,id);
+
+
+        }catch(SQLException e){
+            System.out.println(e.getMessage());
+        }
+        return null;
+    }
+
+    /**
      * TODO: Retrieve a specific Message using its Message ID.
-     *
-     * You only need to change the sql String and set preparedStatement parameters.
-     *
-     * Remember that the format of a select where statement written as a Java String looks something like this:
-     * String sql = "select * from TableName where ColumnName = ?";
-     * The question marks will be filled in by the preparedStatement setString, setInt, etc methods. they follow
-     * this format, where the first argument identifies the question mark to be filled (left to right, starting
-     * from zero) and the second argument identifies the value to be used:
-     * preparedStatement.setInt(1,int1);
-     *
+     * 
      * @param id a Message ID.
      */
     public Message getMessageById(int id){
         Connection connection = ConnectionUtil.getConnection();
         try {
             //Write SQL logic here
-            String sql = "SELECT * FROM Message where Message_id = ?";
+            String sql = "SELECT * FROM Message where message_id = ?";
             
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
 
@@ -63,9 +103,9 @@ public class MessageDAO {
 
             ResultSet rs = preparedStatement.executeQuery();
             while(rs.next()){
-                /*Message Message = new Message(rs.getInt("Message_id"), rs.getString("departure_city"),
-                        rs.getString("arrival_city"));
-                return Message;*/
+                Message Message = new Message(rs.getInt("message_id"), rs.getInt("posted_by"),
+                        rs.getString("message_text"), rs.getLong("time_posted_epoch"));
+                return Message;
             }
         }catch(SQLException e){
             System.out.println(e.getMessage());
@@ -75,20 +115,6 @@ public class MessageDAO {
 
     /**
      * TODO: Add a Message record into the database which matches the values contained in the Message object.
-     * You can use the getters already written in the Message class to retrieve its values (getDeparture_city(),
-     * getArrival_city()). The Message_id will be automatically generated by the SQL database, and JDBC will be able
-     * to retrieve the generated ID automatically. That means that you when you insert the Message, you only need
-     * to define the departure_city and arrival_city values (two columns total!)
-     *
-     * You only need to change the sql String and set preparedStatement parameters.
-     *
-     * Remember that the format of a insert PreparedStatement written as a string works something like this:
-     * String sql = "insert into TableName (ColumnName1, ColumnName2) values (?, ?);";
-     * The question marks will be filled in by the preparedStatement setString, setInt, etc methods. they follow
-     * this format, where the first argument identifies the question mark to be filled (left to right, starting
-     * from zero) and the second argument identifies the value to be used:
-     * preparedStatement.setString(1,string1);
-     * preparedStatement.setString(2,string2);
      *
      * @param Message an object modelling a Message. the Message object does not contain a Message ID.
      */
@@ -120,17 +146,6 @@ public class MessageDAO {
     /**
      * TODO: Update the Message identified by the Message id to the values contained in the Message object.
      *
-     * You only need to change the sql String and set preparedStatement parameters.
-     *
-     * Remember that the format of an update PreparedStatement written as a Java String looks something like this:
-     * String sql = "update TableName set ColumnName1=?, ColumnName2=? where ColumnName3 = ?;";
-     * The question marks will be filled in by the preparedStatement setString, setInt, etc methods. they follow
-     * this format, where the first argument identifies the question mark to be filled (left to right, starting
-     * from zero) and the second argument identifies the value to be used:
-     * preparedStatement.setString(1,string1);
-     * preparedStatement.setString(2,string2);
-     * preparedStatement.setInt(3,int1);
-     *
      * @param id a Message ID.
      * @param Message a Message object. the Message object does not contain a Message ID.
      */
@@ -138,13 +153,12 @@ public class MessageDAO {
         Connection connection = ConnectionUtil.getConnection();
         try {
             //Write SQL logic here
-            String sql = "UPDATE Message SET departure_city=?, arrival_city=? where Message_id = ?;";
+            String sql = "UPDATE Message SET message_text=? where Message_id = ?;";
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
 
             //write PreparedStatement setString and setInt methods here.
-            /*preparedStatement.setString(1,Message.departure_city);
-            preparedStatement.setString(2,Message.arrival_city);
-            preparedStatement.setInt(3,id);*/
+            preparedStatement.setString(1,Message.message_text);
+            preparedStatement.setInt(2,id);
 
 
             preparedStatement.executeUpdate();
@@ -153,45 +167,4 @@ public class MessageDAO {
         }
     }
 
-    /**
-     * TODO: Retrieve all Messages following a particular Message path.
-     *
-     * you only need to change the sql string and set preparedStatement parameters.
-     *
-     * Remember that the format of a select where statement written as a Java String looks something like this:
-     * "select * from TableName where ColumnName1 = ? and ColumnName2 = ?;";
-     * The question marks will be filled in by the preparedStatement setString, setInt, etc methods. they follow
-     * this format, where the first argument identifies the question mark to be filled (left to right, starting
-     * from zero) and the second argument identifies the value to be used:
-     * preparedStatement.setString(1,"column 1 value");
-     * preparedStatement.setString(2,"column 2 value");
-     *
-     * @param departure_city the departing city.
-     * @param arrival_city the arriving city.
-     * @return all Messages from departure_city to arrival_city.
-     */
-    public List<Message> getAllMessagesFromCityToCity(String departure_city, String arrival_city){
-        Connection connection = ConnectionUtil.getConnection();
-        List<Message> Messages = new ArrayList<>();
-        try {
-            //Write SQL logic here
-            String sql = "SELECT * FROM Message WHERE departure_city = ? and arrival_city = ?;";
-            PreparedStatement preparedStatement = connection.prepareStatement(sql);
-
-            //write PreparedStatement setString and setInt methods here.
-            preparedStatement.setString(1,departure_city);
-            preparedStatement.setString(2,arrival_city);
-
-
-            ResultSet rs = preparedStatement.executeQuery();
-            while(rs.next()){
-                /*Message Message = new Message(rs.getInt("Message_id"), rs.getString("departure_city"),
-                        rs.getString("arrival_city"));
-                Messages.add(Message);*/
-            }
-        }catch(SQLException e){
-            System.out.println(e.getMessage());
-        }
-        return Messages;
-    }
 }

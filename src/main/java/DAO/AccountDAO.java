@@ -4,10 +4,6 @@ import Model.Account;
 import Util.ConnectionUtil;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
-
-
 
 public class AccountDAO {
 
@@ -15,16 +11,7 @@ public class AccountDAO {
     /**
      * TODO: Retrieve a specific Account using its Username.
      *
-     * You only need to change the sql String and set preparedStatement parameters.
-     *
-     * Remember that the format of a select where statement written as a Java String looks something like this:
-     * String sql = "select * from TableName where ColumnName = ?";
-     * The question marks will be filled in by the preparedStatement setString, setInt, etc methods. they follow
-     * this format, where the first argument identifies the question mark to be filled (left to right, starting
-     * from zero) and the second argument identifies the value to be used:
-     * preparedStatement.setInt(1,int1);
-     *
-     * @param id a Account ID.
+     * @param usernameString a Account username.
      */
     public Account getAccountByUsername(String usernameString){
         Connection connection = ConnectionUtil.getConnection();
@@ -49,6 +36,11 @@ public class AccountDAO {
         return null;
     }
 
+    /**
+     * TODO: Add a specific Account using its Username and Password.
+     *
+     * @param Account a Account object. the Account object does not contain a Account ID..
+     */
     public Account insertAccount(Account Account){
         Connection connection = ConnectionUtil.getConnection();
         try {
@@ -72,6 +64,11 @@ public class AccountDAO {
         }
         return null;
     }
+        /**
+     * TODO: Retrieve a specific Account using its Id.
+     *
+     * @param id a Account ID.
+     */
     public Account getAccountById(int id){
         Connection connection = ConnectionUtil.getConnection();
         try {
